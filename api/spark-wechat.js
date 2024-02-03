@@ -197,7 +197,7 @@ module.exports = async function (request, response) {
   if (!userChatHistory[FromUserName]) {
     userChatHistory[FromUserName] = [];
   }
-  userChatHistory[FromUserName].push({ Role: "user", Content });
+  userChatHistory[FromUserName].push({ role: "user", content: Content });
   console.log("会话历史：", userChatHistory);
   const data = genParams(userChatHistory[FromUserName]);
 
@@ -234,8 +234,8 @@ module.exports = async function (request, response) {
         console.log("total_tokens:", totalTokens);
         userHasAnswerIng[FromUserName] = false;
         userChatHistory[FromUserName].push({
-          Role: "assistant",
-          Content: answer,
+          role: "assistant",
+          content: answer,
         });
         const timeNow2 = Math.floor(Date.now() / 1000);
         if (timeNow2 - timeNow > 3) {
@@ -284,7 +284,6 @@ function formatReply(ToUserName, FromUserName, CreateTime, Content) {
 }
 
 function genParams(messages) {
-  console.log("messages", messages);
   return {
     header: {
       app_id: process.env.APPID,
