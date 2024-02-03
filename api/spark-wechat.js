@@ -1,9 +1,9 @@
-const crypto = require('crypto');
-const dotenv = require('dotenv');
-const url = require('url');
-const querystring = require('querystring');
-const xml2js = require('xml2js');
-const WebSocket = require('ws');
+const crypto = require("crypto");
+const dotenv = require("dotenv");
+const url = require("url");
+const querystring = require("querystring");
+const xml2js = require("xml2js");
+const WebSocket = require("ws");
 
 dotenv.config();
 
@@ -82,23 +82,24 @@ const emojiObj = {
   "/:heart": "爱心",
   "/:break": "心裂开了",
   "/:cake": "蛋糕",
-  "/:li": "闪电劈你"
+  "/:li": "闪电劈你",
 };
 // const keywordAutoReply = JSON.parse(process.env.KEYWORD_REPLAY);
 // module.exports = async function (request, response) {
 module.exports = async function (request, response) {
-  console.log(request, 123, response);
   const method = request.method;
   const timestamp = request.query.timestamp;
   const nonce = request.query.nonce;
   const signature = request.query.signature;
   const echostr = request.query.echostr;
 
-  if (method === 'GET') {
+  console.log(1, method, 2, nonce, 3, signature, 4, echostr);
+
+  if (method === "GET") {
     const token = process.env.WX_TOKEN;
     const tmpArr = [token, timestamp, nonce].sort();
-    const tmpStr = tmpArr.join('');
-    const hash = crypto.createHash('sha1').update(tmpStr).digest('hex');
+    const tmpStr = tmpArr.join("");
+    const hash = crypto.createHash("sha1").update(tmpStr).digest("hex");
     if (hash === signature) {
       response.status(200).send(echostr);
       return;
@@ -119,12 +120,12 @@ module.exports = async function (request, response) {
   console.log("收到消息类型：" + MsgType);
   let Content;
   const timeNow = Math.floor(Date.now() / 1000);
-  if (MsgType === 'text') {
+  if (MsgType === "text") {
     Content = textMsg.xml.Content[0];
-    console.log("收到文本消息：" + Content)
+    console.log("收到文本消息：" + Content);
     if (Object.hasOwnProperty.call(emojiObj, Content)) {
       //用户发送了微信自带表情
-      Content = '我发送了表情：' + emojiObj[Content] + '，现在你要怎么做'
+      Content = "我发送了表情：" + emojiObj[Content] + "，现在你要怎么做";
     }
     // console.log("关键词配置：", keywordAutoReply, "文本内容：" + Content, "匹配结果：", Object.hasOwnProperty.call(keywordAutoReply, Content));
     // if (Object.hasOwnProperty.call(keywordAutoReply, Content)) {
@@ -140,45 +141,54 @@ module.exports = async function (request, response) {
     // }
   }
 
-
-  if (MsgType === 'event') {
+  if (MsgType === "event") {
     const Event = textMsg.xml.Event[0];
-    if (Event === 'subscribe') {
-      response.status(200).send(formatReply(
-        FromUserName,
-        ToUserName,
-        timeNow,
-        process.env.SUBSCRIBE_REPLY
-      ));
+    if (Event === "subscribe") {
+      response
+        .status(200)
+        .send(
+          formatReply(
+            FromUserName,
+            ToUserName,
+            timeNow,
+            process.env.SUBSCRIBE_REPLY
+          )
+        );
       return;
     } else {
-      return response.status(200).send('');
+      return response.status(200).send("");
     }
   }
 
   if (userHasAnswerIng[FromUserName]) {
-    response.status(200).send(formatReply(
-      FromUserName,
-      ToUserName,
-      timeNow,
-      '微信规定要在5s内回复，但是本次需要回复的内容很长，现在还没整理好，所以你暂时看到了这条消息。请稍后回复任意文字尝试获取回复。比如数字 1。'
-    ));
+    response
+      .status(200)
+      .send(
+        formatReply(
+          FromUserName,
+          ToUserName,
+          timeNow,
+          "微信规定要在5s内回复，但是本次需要回复的内容很长，现在还没整理好，所以你暂时看到了这条消息。请稍后回复任意文字尝试获取回复。比如数字 1。"
+        )
+      );
     return;
   }
 
   if (userStashMsg[FromUserName]) {
-    console.log('用户有暂存数据，返回暂存数据');
+    console.log("用户有暂存数据，返回暂存数据");
     let tmp = userStashMsg[FromUserName];
-    userStashMsg[FromUserName] = '';
-    response.status(200).send(formatReply(
-      FromUserName,
-      ToUserName,
-      timeNow,
-      tmp
-    ));
+    userStashMsg[FromUserName] = "";
+    response
+      .status(200)
+      .send(formatReply(FromUserName, ToUserName, timeNow, tmp));
     return;
   }
-  console.log("当前时间：", timeNow, "上次时间：", userLastChatTime[FromUserName])
+  console.log(
+    "当前时间：",
+    timeNow,
+    "上次时间：",
+    userLastChatTime[FromUserName]
+  );
   if (
     userLastChatTime[FromUserName] &&
     timeNow - userLastChatTime[FromUserName] >= 300
@@ -189,17 +199,17 @@ module.exports = async function (request, response) {
   if (!userChatHistory[FromUserName]) {
     userChatHistory[FromUserName] = [];
   }
-  userChatHistory[FromUserName].push({ Role: 'user', Content });
+  userChatHistory[FromUserName].push({ Role: "user", Content });
   console.log("会话历史：", userChatHistory);
   const data = genParams(userChatHistory[FromUserName]);
 
   const connect = await getConnect();
   connect.send(JSON.stringify(data));
 
-  let answer = '';
+  let answer = "";
   let timeout;
   const done = new Promise((resolve) => {
-    connect.on('message', (msg) => {
+    connect.on("message", (msg) => {
       const data = JSON.parse(msg);
       const payload = data.payload;
       const choices = payload.choices;
@@ -218,14 +228,14 @@ module.exports = async function (request, response) {
         answer += content;
       } else {
         answer += content;
-        console.log('收到最终结果：', answer);
+        console.log("收到最终结果：", answer);
         const usage = payload.usage;
         const temp = usage.text;
         const totalTokens = temp.total_tokens;
-        console.log('total_tokens:', totalTokens);
+        console.log("total_tokens:", totalTokens);
         userHasAnswerIng[FromUserName] = false;
         userChatHistory[FromUserName].push({
-          Role: 'assistant',
+          Role: "assistant",
           Content: answer,
         });
         const timeNow2 = Math.floor(Date.now() / 1000);
@@ -241,13 +251,13 @@ module.exports = async function (request, response) {
   const timeoutPromise = new Promise((resolve) => {
     timeout = setTimeout(() => {
       userHasAnswerIng[FromUserName] = true;
-      console.log('执行超过4s，提前返回');
+      console.log("执行超过4s，提前返回");
       resolve(
         formatReply(
           FromUserName,
           ToUserName,
           timeNow,
-          '微信规定要在5s内回复，但是我正在思考中，所以你暂时看到了这条消息。请稍后回复任意文字尝试获取回复。比如数字 1。'
+          "微信规定要在5s内回复，但是我正在思考中，所以你暂时看到了这条消息。请稍后回复任意文字尝试获取回复。比如数字 1。"
         )
       );
     }, 4000);
@@ -258,8 +268,10 @@ module.exports = async function (request, response) {
     response.status(200).send(result);
     return;
   }
-  response.status(200).send(formatReply(FromUserName, ToUserName, timeNow, answer));
-  return
+  response
+    .status(200)
+    .send(formatReply(FromUserName, ToUserName, timeNow, answer));
+  return;
 };
 
 function formatReply(ToUserName, FromUserName, CreateTime, Content) {
@@ -283,7 +295,7 @@ function genParams(messages) {
         temperature: 0.8,
         top_k: 6,
         max_tokens: 2048,
-        auditing: 'default',
+        auditing: "default",
       },
     },
     payload: {
@@ -297,8 +309,8 @@ async function getConnect() {
   const authUrl = assembleAuthUrl1();
   const ws = new WebSocket(authUrl);
   await new Promise((resolve, reject) => {
-    ws.on('open', resolve);
-    ws.on('error', reject);
+    ws.on("open", resolve);
+    ws.on("error", reject);
   });
   return ws;
 }
@@ -310,20 +322,20 @@ function assembleAuthUrl1() {
   const ul = url.parse(hostUrl);
   const date = new Date().toUTCString();
   const signString = `host: ${ul.host}\ndate: ${date}\nGET ${ul.pathname} HTTP/1.1`;
-  const sha = hmacWithShaTobase64('hmac-sha256', signString, apiSecret);
+  const sha = hmacWithShaTobase64("hmac-sha256", signString, apiSecret);
   const authUrl = `hmac username="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${sha}"`;
-  const authorization = Buffer.from(authUrl).toString('base64');
+  const authorization = Buffer.from(authUrl).toString("base64");
   const v = querystring.stringify({
     host: ul.host,
     date: date,
     authorization: authorization,
   });
-  return hostUrl + '?' + v;
+  return hostUrl + "?" + v;
 }
 
 function hmacWithShaTobase64(algorithm, data, key) {
-  const hmac = crypto.createHmac('sha256', key);
+  const hmac = crypto.createHmac("sha256", key);
   hmac.update(data);
   const encodeData = hmac.digest();
-  return Buffer.from(encodeData).toString('base64');
+  return Buffer.from(encodeData).toString("base64");
 }
