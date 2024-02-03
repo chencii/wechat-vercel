@@ -93,8 +93,6 @@ module.exports = async function (request, response) {
   const signature = request.query.signature;
   const echostr = request.query.echostr;
 
-  console.log(1, method, 2, nonce, 3, signature, 4, echostr);
-
   if (method === "GET") {
     const token = process.env.WX_TOKEN;
     const tmpArr = [token, timestamp, nonce].sort();
@@ -117,7 +115,7 @@ module.exports = async function (request, response) {
   const FromUserName = textMsg.xml.FromUserName[0];
   const CreateTime = textMsg.xml.CreateTime[0];
   const MsgType = textMsg.xml.MsgType[0];
-  console.log("收到消息类型：" + MsgType);
+
   let Content;
   const timeNow = Math.floor(Date.now() / 1000);
   if (MsgType === "text") {
@@ -205,6 +203,8 @@ module.exports = async function (request, response) {
 
   const connect = await getConnect();
   connect.send(JSON.stringify(data));
+
+  console.log('connect', connect);
 
   let answer = "";
   let timeout;
