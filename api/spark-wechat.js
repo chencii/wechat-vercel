@@ -87,6 +87,7 @@ const emojiObj = {
 // const keywordAutoReply = JSON.parse(process.env.KEYWORD_REPLAY);
 // module.exports = async function (request, response) {
 module.exports = async function (request, response) {
+  console.log(request, 123, response);
   const method = request.method;
   const timestamp = request.query.timestamp;
   const nonce = request.query.nonce;
