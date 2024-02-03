@@ -9,7 +9,7 @@
   "keywords": [
     "wehcat-bot"
   ],
-  "author": "ergou",
+  "author": "sethvoler",
   "license": "ISC",
   "dependencies": {
     "crypto-js": "^4.2.0",

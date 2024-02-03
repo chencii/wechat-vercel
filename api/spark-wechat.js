@@ -84,7 +84,8 @@ const emojiObj = {
   "/:cake": "蛋糕",
   "/:li": "闪电劈你"
 };
-const keywordAutoReply = JSON.parse(process.env.KEYWORD_REPLAY);
+// const keywordAutoReply = JSON.parse(process.env.KEYWORD_REPLAY);
+// module.exports = async function (request, response) {
 module.exports = async function (request, response) {
   const method = request.method;
   const timestamp = request.query.timestamp;
@@ -124,19 +125,18 @@ module.exports = async function (request, response) {
       //用户发送了微信自带表情
       Content = '我发送了表情：' + emojiObj[Content] + '，现在你要怎么做'
     }
-    console.log("关键词配置：", keywordAutoReply, "文本内容：" + Content, "匹配结果：", Object.hasOwnProperty.call(keywordAutoReply, Content));
-    if (Object.hasOwnProperty.call(keywordAutoReply, Content)) {
-      //关键词自动回复
-      console.log("触发关键词自动回复");
-      response.status(200).send(formatReply(
-        FromUserName,
-        ToUserName,
-        timeNow,
-        keywordAutoReply[Content]
-      ));
-      return;
-
-    }
+    // console.log("关键词配置：", keywordAutoReply, "文本内容：" + Content, "匹配结果：", Object.hasOwnProperty.call(keywordAutoReply, Content));
+    // if (Object.hasOwnProperty.call(keywordAutoReply, Content)) {
+    //   //关键词自动回复
+    //   console.log("触发关键词自动回复");
+    //   response.status(200).send(formatReply(
+    //     FromUserName,
+    //     ToUserName,
+    //     timeNow,
+    //     keywordAutoReply[Content]
+    //   ));
+    //   return;
+    // }
   }
 
 
