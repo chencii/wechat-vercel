@@ -209,7 +209,7 @@ module.exports = async function (request, response) {
   const done = new Promise((resolve) => {
     connect.on("message", (msg) => {
       const data = JSON.parse(msg);
-      console.log('msg', msg, data);
+      console.log("msg", msg, data);
       const payload = data.payload;
       const choices = payload.choices;
       const header = data.header;
@@ -284,6 +284,7 @@ function formatReply(ToUserName, FromUserName, CreateTime, Content) {
 }
 
 function genParams(messages) {
+  console.log("messages", messages);
   return {
     header: {
       app_id: process.env.APPID,
