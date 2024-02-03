@@ -204,13 +204,12 @@ module.exports = async function (request, response) {
   const connect = await getConnect();
   connect.send(JSON.stringify(data));
 
-  console.log('connect', connect);
-
   let answer = "";
   let timeout;
   const done = new Promise((resolve) => {
     connect.on("message", (msg) => {
       const data = JSON.parse(msg);
+      console.log('msg', msg, data);
       const payload = data.payload;
       const choices = payload.choices;
       const header = data.header;
