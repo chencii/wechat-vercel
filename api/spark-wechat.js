@@ -88,11 +88,11 @@ const emojiObj = {
 // module.exports = async function (request, response) {
 module.exports = async function (request, response) {
   const method = request.method;
-  const timestamp = NaN;
-  const nonce = NaN;
-  const signature = NaN;
-  const echostr = NaN;  
-  // 全为空
+  const timestamp = request.query.timestamp;
+  const nonce = request.query.nonce;
+  const signature = request.query.signature;
+  const echostr = request.query.echostr;
+
 
   if (method === "GET") {
     const token = process.env.WX_TOKEN;
@@ -100,11 +100,11 @@ module.exports = async function (request, response) {
     const tmpStr = tmpArr.join("");
     const hash = crypto.createHash("sha1").update(tmpStr).digest("hex");
     if (hash === signature) {
-      response.status(200).send(token);
+      response.status(200).send(echostr);
       
       return;
     } else {
-      response.status(200).send(token);
+      response.status(200).send(echostr+"+"+token);
       
       return;
     }
