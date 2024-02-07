@@ -102,7 +102,7 @@ module.exports = async function (request, response) {
       response.status(200).send(echostr);
       return;
     } else {
-      response.status(200).send(echostr+"+"+token);
+      response.status(200).send("failed");
       return;
     }
   }
@@ -125,18 +125,18 @@ module.exports = async function (request, response) {
       //用户发送了微信自带表情
       Content = "我发送了表情：" + emojiObj[Content] + "，现在你要怎么做";
     }
-    console.log("关键词配置：", keywordAutoReply, "文本内容：" + Content, "匹配结果：", Object.hasOwnProperty.call(keywordAutoReply, Content));
-    if (Object.hasOwnProperty.call(keywordAutoReply, Content)) {
-      //关键词自动回复
-      console.log("触发关键词自动回复");
-      response.status(200).send(formatReply(
-        FromUserName,
-        ToUserName,
-        timeNow,
-        keywordAutoReply[Content]
-      ));
-      return;
-    }
+    // console.log("关键词配置：", keywordAutoReply, "文本内容：" + Content, "匹配结果：", Object.hasOwnProperty.call(keywordAutoReply, Content));
+    // if (Object.hasOwnProperty.call(keywordAutoReply, Content)) {
+    //   //关键词自动回复
+    //   console.log("触发关键词自动回复");
+    //   response.status(200).send(formatReply(
+    //     FromUserName,
+    //     ToUserName,
+    //     timeNow,
+    //     keywordAutoReply[Content]
+    //   ));
+    //   return;
+    // }
   }
 
   if (MsgType === "event") {
@@ -259,7 +259,7 @@ module.exports = async function (request, response) {
           "微信规定要在5s内回复，但是我正在思考中，所以你暂时看到了这条消息。请稍后回复任意文字尝试获取回复。比如数字 1。"
         )
       );
-    }, 5000);
+    }, 4000);
   });
 
   const result = await Promise.race([done, timeoutPromise]);
@@ -338,5 +338,3 @@ function hmacWithShaTobase64(algorithm, data, key) {
   const encodeData = hmac.digest();
   return Buffer.from(encodeData).toString("base64");
 }
-
-
