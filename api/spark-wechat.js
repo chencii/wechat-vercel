@@ -100,7 +100,7 @@ module.exports = async function (request, response) {
     const tmpStr = tmpArr.join("");
     const hash = crypto.createHash("sha1").update(tmpStr).digest("hex");
     if (hash === signature) {
-      response.status(200).send(echostr);
+      response.status(200).send(NaN);
       
       return;
     } else {
