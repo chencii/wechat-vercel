@@ -105,6 +105,7 @@ module.exports = async function (request, response) {
       return;
     } else {
       response.status(200).send("failed");
+      console.log(token);
       return;
     }
   }
