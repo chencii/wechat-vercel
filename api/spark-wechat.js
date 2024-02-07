@@ -100,12 +100,12 @@ module.exports = async function (request, response) {
     const tmpStr = tmpArr.join("");
     const hash = crypto.createHash("sha1").update(tmpStr).digest("hex");
     if (hash === signature) {
-      response.status(200).send(echostr);
-      console.log(token);  
+      response.status(200).send(token);
+      
       return;
     } else {
-      response.status(200).send("failed");
-      console.log(token);
+      response.status(200).send(token);
+      
       return;
     }
   }
