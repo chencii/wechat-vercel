@@ -91,7 +91,7 @@ module.exports = async function (request, response) {
   const timestamp = request.query.timestamp;
   const nonce = request.query.nonce;
   const signature = request.query.signature;
-  const echostr ;
+  const echostr =  request.query.echostr;
 
 
   if (method === "GET") {
