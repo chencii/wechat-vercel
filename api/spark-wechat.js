@@ -88,10 +88,11 @@ const emojiObj = {
 // module.exports = async function (request, response) {
 module.exports = async function (request, response) {
   const method = request.method;
-  const timestamp = request.query.timestamp;
-  const nonce = request.query.nonce;
-  const signature = request.query.signature;
-  const echostr = request.query.echostr;
+  const timestamp = NaN;
+  const nonce = NaN;
+  const signature = NaN;
+  const echostr = NaN;  
+  // 全为空
 
   if (method === "GET") {
     const token = process.env.WX_TOKEN;
